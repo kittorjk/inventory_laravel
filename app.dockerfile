@@ -8,20 +8,20 @@ RUN apt-get update && apt-get install -y \
     libjpeg62-turbo-dev \
     libfreetype6-dev \
     locales \
-    zip \
+    zip git \
     jpegoptim optipng pngquant gifsicle \
-    vim \
     unzip \
     git \
-    curl
+    curl libpq-dev
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install extensions
-RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl
+RUN docker-php-ext-install pdo pdo_pgsql mbstring zip exif pcntl
 RUN docker-php-ext-configure gd --with-gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-png-dir=/usr/include/
 RUN docker-php-ext-install gd
+RUN docker-php-ext-install opcache
 
 #·Install composer
 RUN curl -sS https://getcomposer.org/installer | php \
@@ -35,7 +35,7 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 RUN groupadd -g 1000 www
 RUN useradd -u 1000 -ms /bin/bash -g www www
 
-WORKDIR /var/www/html
+WORKDIR /var/www/
 ENV PATH="~/.composer/vendor/bin:./vendor/bin:${PATH}"
 
 EXPOSE 9000
