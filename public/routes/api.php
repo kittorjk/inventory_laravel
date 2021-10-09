@@ -66,38 +66,37 @@ Route::get('categoria', function(){
 Route::get('proveedor', function(){
     // return App\Categoria::all();
 
-      $data=  DB::table('proveedor')->orderBy('id_proveedor','desc');
+    $data=  DB::table('proveedor')->orderBy('id_proveedor','desc');
     return datatables()
-         ->queryBuilder($data)
-        ->addColumn('action', function($row){
+        ->queryBuilder($data)
+        ->addColumn('action', function($row) {
 
             $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id_proveedor.'" data-original-title="Edit" class="edit btn btn-primary btn-sm editCategoria"><i class="icon-copy fa fa-pencil" aria-hidden="true"></i></a>';
 
             $btn = $btn.' <a href="javascript:void(0)" data-toggle="tooltip"  data-id="'.$row->id_proveedor.'" data-original-title="Delete" class="btn btn-danger btn-sm deleteCategoria"><i class="icon-copy fa fa-trash-o" aria-hidden="true"></i></a>';
 
              return $btn;
-     })
+        })
         ->toJson();
 });
 
-Route::get('productodt', function(){
-    $data=  DB::table('producto')->select('id_producto','nombre','descripcion','stock','stock','stock_minimo','precio_compra','stock_inicial','foto')->orderBy('nombre','asc');
+Route::get('productodt', function() {
+    $data=  DB::table('producto')->select('id_producto','nombre','descripcion','stock','stock_minimo','precio_compra','stock_inicial','foto','pre1','pre2','pre3')->orderBy('nombre','asc');
     return datatables()
-         ->queryBuilder($data)
-        ->addColumn('action', function($row){
+        ->queryBuilder($data)
+        ->addColumn('action', function($row) {
             $btn = '<div class="dropdown">
             <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#"  role="button" data-toggle="dropdown">
                 <i class="dw dw-more"></i>
             </a>
-            <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list" >
-            <a href="javascript:void(0)" class="dropdown-item verProducto" data-id_producto="'.$row->id_producto.'" ><i class="dw dw-eye"></i> Ver</a>
-
-            <a class="dropdown-item" href="'. route('producto.edit', $row->id_producto) .'"><i class="dw dw-edit2"></i> Editar</a>
-            <a href="javascript:void(0)" class="dropdown-item deleteProducto" data-id_producto="'.$row->id_producto.'"><i class="dw dw-delete-3"></i> Eliminar</a>
+            <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
+                <a href="javascript:void(0)" class="dropdown-item verProducto" data-id_producto="'.$row->id_producto.'"><i class="dw dw-eye"></i> Ver</a>
+                <a class="dropdown-item" href="'. route('producto.edit', $row->id_producto) .'"><i class="dw dw-edit2"></i> Editar</a>
+                <a href="javascript:void(0)" class="dropdown-item deleteProducto" data-id_producto="'.$row->id_producto.'"><i class="dw dw-delete-3"></i> Eliminar</a>
             </div>
-        </div>';
+            </div>';
         return $btn;
-     })
+        })
         ->toJson();
 });
 
@@ -128,9 +127,11 @@ Route::get('productos_sucursal/{id}', function($id){
 Route::get('producto', function(){
     return  DB::table('producto')->orderBy('nombre','asc')->get();
 });
-Route::get('producto/{id}', function($id){
+
+Route::get('producto/{id}', function($id) {
     return  App\Producto::findOrFail($id);
 });
+
 Route::get('productos', function(){
     // return App\Categoria::all();
 

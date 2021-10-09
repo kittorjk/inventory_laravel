@@ -18,19 +18,22 @@
 
 @section('contenido')
 
-
-    <div class="card-box mb-30">
+    {{-- <div class="card-box mb-30">
         <h2 class="h4 pd-20">Listado de Productos</h2>
-        <div class="clearfix mb-20">
+    </div> --}}
 
-            <div class="pull-right">
-                <a href="{{ route('producto.create') }}" class="btn btn-primary btn-sm scroll-click"><i
-                        class="fa fa-plus"></i> Producto</a>
-            </div>
+    <div class="clearfix mb-20">
+        <div class="pull-right">
+            <a href="{{ route('producto.create') }}" class="btn btn-primary btn-sm scroll-click" type="button">
+                <i class="fa fa-plus"></i> Nuevo producto
+            </a>
         </div>
     </div>
-    <div class="card-box mb-30">
 
+    <div class="card-box mb-30">
+        <div class="pd-20">
+            <h4 class="text-blue h4">Listado de Productos</h4>
+        </div>
         <div class="pb-20">
             <table id="producto" class="data-table table nowrap">
                 <thead>
@@ -42,20 +45,21 @@
                         <th scope="col">Descripcion</th>
                         <th scope="col">Stock</th>
                         <th scope="col">Stock Minimo</th>
-                        <th scope="col">Precio</th>
+                        <th scope="col">Precio compra</th>
                         <th scope="col">Stock Inicial</th>
+                        <th scope="col" title="Precio de venta 1">PV1</th>
+                        <th scope="col" title="Precio de venta 2">PV2</th>
+                        <th scope="col" title="Precio de venta 3">PV3</th>
                         <th class="datatable-nosort">Accion</th>
-
-
                     </tr>
                 </thead>
                 <tbody>
                 </tbody>
-
             </table>
         </div>
     </div>
-    <!-- MODAL DELTALLE -->
+
+    <!-- MODAL DETALLE DE PRODUCTO -->
     <div class="modal fade bs-example-modal-lg" id="Medium-modal" tabindex="-1" role="dialog"
         aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -109,7 +113,7 @@
     <!-- -->
 
     <!-- The Modal -->
-    <!-- MODAL DELTALLE -->
+    <!-- MODAL DETALLE -->
     <div class="modal fade bs-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -164,8 +168,6 @@
                     serverSide: true,
                     ajax: "/api/productodt",
                     columns: [
-
-
                         /*    {data: 'id_producto'},  onmouseover="this.src='/ico/view.hover.png'" onmouseout="this.src='/ico/view.png'"*/
                         {
                             data: 'foto',
@@ -192,13 +194,24 @@
                             //width: "20%",
                         },
                         {
-                            data: 'stock_minimo'
+                            data: 'stock_minimo',
+                            visible: false
                         },
                         {
                             data: 'precio_compra'
                         },
                         {
-                            data: 'stock_inicial'
+                            data: 'stock_inicial',
+                            visible: false
+                        },
+                        {
+                            data: 'pre1'
+                        },
+                        {
+                            data: 'pre2'
+                        },
+                        {
+                            data: 'pre3'
                         },
                         {
                             data: 'action',
@@ -206,7 +219,6 @@
                             orderable: false,
                             searchable: false
                         },
-
                     ]
                 });
                 table.columns.adjust().draw();
@@ -221,7 +233,7 @@
                         type: "GET",
                         url: "/api/producto/" + id,
                         success: function(response) {
-                            //  console.log(response);
+                            // console.log(response);
                             $('#Medium-modal').modal('show');
                             $('#uno1').text(response['id_producto']);
                             $('#uno').text(response['nombre']);
@@ -245,11 +257,7 @@
                     var id = $(this).data('id_producto');
                     console.log(id);
                     var mensaje = confirm("¿Desea Eliminar Producto?");
-                    //Detectamos si el usuario acepto el mensaje
                     if (mensaje) {
-
-
-
                         $.ajax({
                             type: "DELETE",
                             url: "producto/" + id,
@@ -275,9 +283,8 @@
                             }
                         });
                     }
-
-
                 });
+
                 // mostrar imagen en modal
                 $('body').on('mouseover', '#idimg', function() {
                     $("#mi_imagen1").attr("src", $(this).attr("src"));
