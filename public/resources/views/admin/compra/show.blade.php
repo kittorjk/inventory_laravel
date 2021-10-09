@@ -19,6 +19,21 @@ Detalle de Compra
             <div class="logo text-center">
                 <img src="vendors/images/deskapp-logo.png" alt="">
             </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="text-right">
+                        <a href="/compra" class="btn btn-warning btn-sm">
+                            <i class="icon-copy fa fa-arrow-left" aria-hidden="true"></i>
+                        </a>
+                        <a href="{{ '/pdfCompra/'.$compra->id_compra }}" target="_blank" data-id="{{ $compra->id_compra }}" class="btn btn-info btn-sm">
+                            <i class="icon-copy fa fa-file-pdf-o" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0)" data-id="{{ $compra->id_compra }}" class="btn btn-danger btn-sm deleteCompra">
+                            <i class="icon-copy fa fa-trash-o" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
         <h4 class="text-center mb-30 weight-600">Detalle de Compra</h4>
         <div class="row pb-30">
@@ -86,7 +101,35 @@ Detalle de Compra
 
     <script type="text/javascript">
     $(document).ready(function() {
-
+        $('body').on('click', '.deleteCompra', function() {
+            var id = $(this).data('id');
+            console.log(id);
+            var mensaje = confirm("¿Desea Eliminar la Compra ?");
+            if (mensaje) {
+                $.ajax({
+                    type: "DELETE",
+                    url: "/compra/" + id,
+                    data: {
+                        _method: 'DELETE',
+                        _token: '{{ csrf_token() }}',
+                    },
+                    success: function(response) {
+                        if (response == 'ok') {
+                            alert('Compra Eliminada');
+                        } else {
+                            alert('Error al Eliminar Compra');
+                        }
+                        table.clear();
+                        table.draw();
+                    },
+                    error: function(error) {
+                        // console.log(error.responseJSON.message);
+                        console.log(error)
+                        alert('Error al Eliminar exite dependencias');
+                    }
+                });
+            }
+        });
     });
     </script>
 

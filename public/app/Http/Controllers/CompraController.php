@@ -126,19 +126,19 @@ class CompraController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id){
+    public function show($id) {
 
         $compra = Compra::join('proveedor','compra.id_proveedor','=','proveedor.id_proveedor')
-        ->join('detalle_c','compra.id_compra','=','detalle_c.id_compra')
-        ->join('users','users.id','=','compra.id_user')
-        ->select('compra.id_compra','compra.f_compra','users.name as usuario',
-        DB::raw('sum(detalle_c.cantidad*precio) as total'),'proveedor.nombre','proveedor.ruc_nit','proveedor.direccion')
-        ->where('compra.id_compra','=',$id)
-        ->orderBy('compra.id_compra', 'desc')
-        ->groupBy('compra.id_compra','compra.f_compra','proveedor.nombre','proveedor.direccion','users.name','proveedor.ruc_nit')
-        ->first();
+            ->join('detalle_c','compra.id_compra','=','detalle_c.id_compra')
+            ->join('users','users.id','=','compra.id_user')
+            ->select('compra.id_compra','compra.f_compra','users.name as usuario',
+            DB::raw('sum(detalle_c.cantidad*precio) as total'),'proveedor.nombre','proveedor.ruc_nit','proveedor.direccion')
+            ->where('compra.id_compra','=',$id)
+            ->orderBy('compra.id_compra', 'desc')
+            ->groupBy('compra.id_compra','compra.f_compra','proveedor.nombre','proveedor.direccion','users.name','proveedor.ruc_nit')
+            ->first();
 
-    $detalles = DetalleCompra::join('producto','detalle_c.id_producto','=','producto.id_producto')
+        $detalles = DetalleCompra::join('producto','detalle_c.id_producto','=','producto.id_producto')
              ->select('detalle_c.cantidad','detalle_c.precio','producto.nombre as producto')
              ->where('detalle_c.id_compra','=',$id)
              ->orderBy('detalle_c.id_detalle_c', 'asc')->get();
@@ -182,33 +182,34 @@ class CompraController extends Controller
         $detalle = DetalleCompra::where('id_compra','=',$compra->id_compra)->get();
 
         for ($i = 0; $i < (count($detalle)); $i++) {
-            // almacen Productos
+            // Se retira la cantidad comprada de stock, almacen Productos
             $producto = Producto::find($detalle[$i]->id_producto);
             $producto->stock =  ($producto->stock - $detalle[$i]->cantidad);
             $producto->save();
         }
+
         DetalleCompra::where('id_compra','=',$compra->id_compra)->delete();
-        if($compra->delete()){
+        if ($compra->delete()) {
             return 'ok';
         }
-        else{
+        else {
             return 'false';
         }
     }
 
-    public function pdf(Request $request,$id){
+    public function pdf(Request $request,$id) {
 
         $compra = Compra::join('proveedor','compra.id_proveedor','=','proveedor.id_proveedor')
-        ->join('detalle_c','compra.id_compra','=','detalle_c.id_compra')
-        ->join('users','users.id','=','compra.id_user')
-        ->select('compra.id_compra','compra.f_compra','users.name as usuario',
-        DB::raw('sum(detalle_c.cantidad*precio) as total'),'proveedor.nombre','proveedor.ruc_nit','proveedor.direccion')
-        ->where('compra.id_compra','=',$id)
-        ->orderBy('compra.id_compra', 'desc')
-        ->groupBy('compra.id_compra','compra.f_compra','proveedor.nombre','proveedor.direccion','users.name','proveedor.ruc_nit')
-        ->first();
+            ->join('detalle_c','compra.id_compra','=','detalle_c.id_compra')
+            ->join('users','users.id','=','compra.id_user')
+            ->select('compra.id_compra','compra.f_compra','users.name as usuario',
+            DB::raw('sum(detalle_c.cantidad*precio) as total'),'proveedor.nombre','proveedor.ruc_nit','proveedor.direccion')
+            ->where('compra.id_compra','=',$id)
+            ->orderBy('compra.id_compra', 'desc')
+            ->groupBy('compra.id_compra','compra.f_compra','proveedor.nombre','proveedor.direccion','users.name','proveedor.ruc_nit')
+            ->first();
 
-    $detalles = DetalleCompra::join('producto','detalle_c.id_producto','=','producto.id_producto')
+        $detalles = DetalleCompra::join('producto','detalle_c.id_producto','=','producto.id_producto')
              ->select('detalle_c.id_detalle_c','detalle_c.cantidad','detalle_c.precio','producto.nombre as producto')
              ->where('detalle_c.id_compra','=',$id)
              ->orderBy('detalle_c.id_detalle_c', 'asc')->get();
